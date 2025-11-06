@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensor Monitoring Dashboard with Login</title>
+    
+    <!-- External Dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Local CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-icon">⚡</div>
+
+                <h1 class="login-title">Energy Doc</h1>
+                <p class="login-subtitle">Secure access required</p>
+            </div>
+            
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label for="userId" class="form-label">User ID</label>
+                    <input type="text" id="userId" class="form-input" placeholder="Enter your ID" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+                </div>
+                
+                <button type="submit" class="login-button" id="loginButton">
+                    Sign In
+                </button>
+                
+                <div class="error-message" id="errorMessage">
+                    Invalid credentials. Please try again.
+                </div>
+            </form>
+            
+            <!-- <div class="demo-credentials">
+                <h4>Demo Credentials</h4>
+                <p><strong>ID:</strong> fifty hertz</p>
+                <p><strong>Password:</strong> company</p> -->
+            <!-- </div> -->
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboardPage" class="hidden">
+        <div class="app-container">
+            <!-- Logout Button -->
+            <button class="logout-button" id="logoutButton">Logout</button>
+
+            <!-- Modern Header -->
+            <header class="app-header">
+                <div class="header-content">
+                    <div class="brand">
+                        <div class="brand-text">
+                            <h1> Transformer Monitoring</h1>
+                            <p>Real-time Data Dashboard</p>
+                        </div>
+                    </div>
+                    <div class="header-stats">
+                        <div class="stat-item">
+                            <span class="stat-value" id="active-units">1</span>
+                            <span class="stat-label">Active Unit</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="inactive-units">2</span>
+                            <span class="stat-label">Inactive Units</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Dashboard -->
+            <main class="dashboard-main">
+                <!-- Enhanced Alert Section -->
+                <section class="alert-section" id="alertSection">
+                    <div class="alert-header">
+                        <div class="alert-title-section">
+                            <div class="alert-icon">🌡️</div>
+                            <div class="alert-title">Transformer Monitoring </div>
+                        </div>
+                        <div class="alert-status" id="alertStatus">
+                            <div class="status-dot"></div>
+                            <span>System Alert</span>
+                        </div>
+                    </div>
+                    <div class="alert-message" id="alertMessage"></div>
+                </section>
+
+                <!-- Main Page -->
+                <div id="mainPage">
+                    <!-- Map Section -->
+                    <section class="map-section">
+                        <div class="map-container">
+                            <div class="map-header">
+                                <h3>Transformer Locations</h3>
+                                <div class="map-legend">
+                                    <div class="legend-item">
+                                        <div class="legend-dot operational"></div>
+                                        <span>Operational</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <div class="legend-dot critical"></div>
+                                        <span>Critical</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <div class="legend-dot inactive"></div>
+                                        <span>Inactive</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="map" class="map-view"></div>
+                            <div class="map-info">
+                                <strong>Last Data Update:</strong> <span id="map-last-update">--:--:--</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Sensor Data Section -->
+                    <section class="sensor-section">
+                        <div class="sensor-container">
+                            <div class="sensor-header">
+                                <h3>Transformer Data</h3>
+                                <div class="sensor-status" id="sensorStatus">
+                                    <div class="status-dot"></div>
+                                    <span>Offline</span>
+                                </div>
+                            </div>
+                            
+                            <div class="sensor-metrics">
+                                <div class="sensor-metric">
+                                    <div class="metric-icon">🌡️</div>
+                                    <div class="metric-data">
+                                        <span class="metric-value" id="temperature-value">--</span>
+                                        <span class="metric-unit">°C</span>
+                                    </div>
+                                    <span class="metric-label">Temperature</span>
+                                </div>
+                                
+                                <div class="sensor-metric">
+                                    <div class="metric-icon">💧</div>
+                                    <div class="metric-data">
+                                        <span class="metric-value" id="humidity-value">--</span>
+                                        <span class="metric-unit">%</span>
+                                    </div>
+                                    <span class="metric-label">Humidity</span>
+                                </div>
+                                
+                                <div class="sensor-metric">
+                                    <div class="metric-icon">🔋</div>
+                                    <div class="metric-data">
+                                        <span class="metric-value" id="Current-value">--</span>
+                                        <span class="metric-unit">C</span>
+                                    </div>
+                                    <span class="metric-label">Current</span>
+                                </div>
+                            </div>
+
+                            <div class="sensor-footer">
+                                <div>
+                                    <strong>Last Data Update:</strong> <span id="sensor-last-update">--:--:--</span>
+                                </div>
+                                <!-- <div>
+                                    <strong>Total Data Points Received:</strong> <span id="data-count">0</span>
+                                </div> -->
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Charts Page -->
+                <div id="chartsPage" class="charts-page">
+                    <div class="charts-header">
+                        <h2>Transformer A - Detailed Analytics</h2>
+                        <button class="back-btn" onclick="showMainPage()">
+                            ← Back to Dashboard
+                        </button>
+                    </div>
+
+                    <div class="charts-grid">
+                        <!-- Environmental Data Chart -->
+                        <div class="chart-container">
+                            <div class="chart-header">
+                                <h3>Thermal Monitoring</h3>
+                                <div class="chart-controls">
+                                    <button class="chart-btn active" data-chart="temp" onclick="switchEnvChart('temp')">Temperature</button>
+                                    <button class="chart-btn" data-chart="humid" onclick="switchEnvChart('humid')">Humidity</button>
+                                </div>
+                            </div>
+                            <div class="chart-content">
+                                <canvas id="temperatureChart" class="chart-canvas active"></canvas>
+                                <canvas id="humidityChart" class="chart-canvas"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- 
+                         Chart -->
+                        <div class="chart-container">
+                            <div class="chart-header">
+                                <h3>Current Monitoring</h3>
+                            </div>
+                            <div class="chart-content">
+                                <canvas id="CurrentChart" class="chart-canvas active"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <footer class="app-footer">
+                    <div class="footer-content">
+                        <div class="company">
+                            <a href="https://www.fiftyhertztech.com" target="_blank">Developed by Fifty Hertz Technology Pvt. Ltd.</a>
+                        </div>
+                        <div class="contact">
+                            <a href="mailto:contact@fiftyhertztech.com">contact@fiftyhertztech.com</a>
+                        </div>
+                    </div>
+                </footer>
+            </main>
+
+            Connection Status -->
+            <!-- <div class="connection-status" id="connectionStatus">
+                <div class="connection-dot"></div>
+                <span>Disconnected</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Local JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
