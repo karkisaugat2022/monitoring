@@ -456,7 +456,7 @@ class SensorDashboard {
             data: {
                 labels: [],
                 datasets: [{
-                    label: 'Current (C)',
+                    label: 'Current (A)',
                     data: [],
                     borderColor: '#10b981',
                     backgroundColor: 'rgba(16, 185, 129, 0.1)',
@@ -821,4 +821,5 @@ shakeStyle.textContent = `
         75% { transform: translateX(5px); }
     }
 `;
+
 document.head.appendChild(shakeStyle);
