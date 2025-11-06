@@ -313,7 +313,7 @@ class SensorDashboard {
                             </div>
                             <div class="popup-value-box">
                                 <div class="popup-value" style="color: #10b981;" id="popup-Current">--</div>
-                                <div class="popup-label">Current (C)</div>
+                                <div class="popup-label">Current (A)</div>
                             </div>
                         </div>
                     </div>
@@ -482,7 +482,7 @@ class SensorDashboard {
                     },
                     y: {
                         beginAtZero: false,
-                        title: { display: true, text: 'Current (C)' }
+                        title: { display: true, text: 'Current (A)' }
                     }
                 }
             }
@@ -823,3 +823,4 @@ shakeStyle.textContent = `
 `;
 
 document.head.appendChild(shakeStyle);
+
